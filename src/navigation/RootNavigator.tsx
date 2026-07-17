@@ -1,8 +1,8 @@
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
-import CoinDetailsScreen from '../screens/CoinDetails/CoinDetailsScreen';
-import AuthStack from './AuthStack';
-import DrawerNavigator from './DrawerNavigator';
+import CoinDetailsScreen from "../screens/CoinDetails/CoinDetailsScreen";
+import AuthStack from "./AuthStack";
+import DrawerNavigator from "./DrawerNavigator";
 
 export type RootStackParamList = {
   Auth: undefined;
@@ -13,18 +13,27 @@ export type RootStackParamList = {
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function RootNavigator() {
-  const userIsLoggedIn = true;
-
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
-      {userIsLoggedIn ? (
-        <>
-          <Stack.Screen name="MainApp" component={DrawerNavigator} />
-          <Stack.Screen name="CoinDetails" component={CoinDetailsScreen} />
-        </>
-      ) : (
-        <Stack.Screen name="Auth" component={AuthStack} />
-      )}
+    <Stack.Navigator
+      initialRouteName="Auth"
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <Stack.Screen
+        name="Auth"
+        component={AuthStack}
+      />
+
+      <Stack.Screen
+        name="MainApp"
+        component={DrawerNavigator}
+      />
+
+      <Stack.Screen
+        name="CoinDetails"
+        component={CoinDetailsScreen}
+      />
     </Stack.Navigator>
   );
 }

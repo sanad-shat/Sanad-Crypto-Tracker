@@ -1,45 +1,56 @@
 import React, { useState } from "react";
 import {
-  Alert,
-  Image,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
+    Alert,
+    Image,
+    SafeAreaView,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
 } from "react-native";
 
 import { Ionicons } from "@expo/vector-icons";
 import {
-  sendPasswordResetEmail,
-  signInWithEmailAndPassword,
+    createUserWithEmailAndPassword,
+    updateProfile,
 } from "firebase/auth";
 
 import { auth } from "../../firebase/firebaseConfig";
 import colors from "../../styles/colors";
 
-type LoginScreenProps = {
+type RegisterScreenProps = {
   navigation: any;
 };
 
-export default function LoginScreen({
+export default function RegisterScreen({
   navigation,
-}: LoginScreenProps) {
+}: RegisterScreenProps) {
+  const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] =
+    useState(false);
+
   const [loading, setLoading] = useState(false);
 
-  const handleLogin = async () => {
+  const handleRegister = async () => {
+    const cleanName = fullName.trim();
     const cleanEmail = email.trim().toLowerCase();
 
-    if (cleanEmail === "" || password === "") {
+    if (
+      cleanName === "" ||
+      cleanEmail === "" ||
+      password === "" ||
+      confirmPassword === ""
+    ) {
       Alert.alert(
         "Missing Information",
-        "Please enter your email and password."
+        "Please fill in all fields."
       );
       return;
     }
@@ -48,6 +59,22 @@ export default function LoginScreen({
       Alert.alert(
         "Invalid Email",
         "Please enter a valid email address."
+      );
+      return;
+    }
+
+    if (password.length < 6) {
+      Alert.alert(
+        "Weak Password",
+        "Password must be at least 6 characters."
+      );
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      Alert.alert(
+        "Password Error",
+        "Passwords do not match."
       );
       return;
     }
@@ -55,99 +82,61 @@ export default function LoginScreen({
     try {
       setLoading(true);
 
-      await signInWithEmailAndPassword(
-        auth,
-        cleanEmail,
-        password
+      const userCredential =
+        await createUserWithEmailAndPassword(
+          auth,
+          cleanEmail,
+          password
+        );
+
+      await updateProfile(userCredential.user, {
+        displayName: cleanName,
+      });
+
+      Alert.alert(
+        "Account Created",
+        "Your account was created successfully.",
+        [
+          {
+            text: "Continue",
+            onPress: () =>
+              navigation.replace("MainApp"),
+          },
+        ]
       );
-
-      navigation.replace("MainApp");
     } catch (error: any) {
-      let message =
-        "Login failed. Please check your information.";
+      console.log("FULL FIREBASE ERROR:", error);
+      console.log("ERROR CODE:", error?.code);
+      console.log("ERROR MESSAGE:", error?.message);
+      console.log("ERROR NAME:", error?.name);
 
-      if (error.code === "auth/invalid-email") {
-        message = "Please enter a valid email address.";
-      } else if (error.code === "auth/user-disabled") {
-        message = "This account has been disabled.";
-      } else if (
-        error.code === "auth/user-not-found" ||
-        error.code === "auth/wrong-password" ||
-        error.code === "auth/invalid-credential"
-      ) {
-        message = "The email or password is incorrect.";
-      } else if (
-        error.code === "auth/network-request-failed"
-      ) {
-        message =
-          "Please check your internet connection.";
-      } else if (
-        error.code === "auth/too-many-requests"
-      ) {
-        message =
-          "Too many login attempts. Please try again later.";
-      }
+      const errorCode =
+        error?.code ||
+        error?.name ||
+        "Unknown";
 
-      Alert.alert("Login Failed", message);
+      const errorMessage =
+        error?.message ||
+        String(error) ||
+        "Something went wrong. Please try again.";
+
+      Alert.alert(
+        "Registration Failed",
+        `${errorMessage}\n\nCode: ${errorCode}`
+      );
     } finally {
       setLoading(false);
     }
   };
 
-  const handleForgotPassword = async () => {
-    const cleanEmail = email.trim().toLowerCase();
-
-    if (cleanEmail === "") {
-      Alert.alert(
-        "Email Required",
-        "Please enter your email address first."
-      );
-      return;
-    }
-
-    if (!cleanEmail.includes("@")) {
-      Alert.alert(
-        "Invalid Email",
-        "Please enter a valid email address."
-      );
-      return;
-    }
-
-    try {
-      await sendPasswordResetEmail(auth, cleanEmail);
-
-      Alert.alert(
-        "Reset Email Sent",
-        "A password reset link has been sent to your email."
-      );
-    } catch (error: any) {
-      let message =
-        "Could not send the password reset email.";
-
-      if (error.code === "auth/invalid-email") {
-        message = "Please enter a valid email address.";
-      } else if (
-        error.code === "auth/network-request-failed"
-      ) {
-        message =
-          "Please check your internet connection.";
-      }
-
-      Alert.alert("Reset Failed", message);
-    }
-  };
-
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={
-        Platform.OS === "ios" ? "padding" : undefined
-      }
-    >
+    <SafeAreaView style={styles.container}>
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         keyboardShouldPersistTaps="handled"
+        keyboardDismissMode="interactive"
         showsVerticalScrollIndicator={false}
+        automaticallyAdjustKeyboardInsets={true}
       >
         <Image
           source={require(
@@ -157,11 +146,31 @@ export default function LoginScreen({
           resizeMode="contain"
         />
 
-        <Text style={styles.title}>Welcome Back</Text>
+        <Text style={styles.title}>Create Account</Text>
 
         <Text style={styles.subtitle}>
-          Login to continue tracking the crypto market
+          Sign up to start tracking cryptocurrency prices
         </Text>
+
+        <Text style={styles.label}>Full Name</Text>
+
+        <View style={styles.inputContainer}>
+          <Ionicons
+            name="person-outline"
+            size={21}
+            color={colors.subText}
+          />
+
+          <TextInput
+            style={styles.input}
+            placeholder="Enter your full name"
+            placeholderTextColor={colors.subText}
+            value={fullName}
+            onChangeText={setFullName}
+            autoCapitalize="words"
+            returnKeyType="next"
+          />
+        </View>
 
         <Text style={styles.label}>Email Address</Text>
 
@@ -181,6 +190,7 @@ export default function LoginScreen({
             keyboardType="email-address"
             autoCapitalize="none"
             autoCorrect={false}
+            returnKeyType="next"
           />
         </View>
 
@@ -200,6 +210,7 @@ export default function LoginScreen({
             value={password}
             onChangeText={setPassword}
             secureTextEntry={!showPassword}
+            returnKeyType="next"
           />
 
           <TouchableOpacity
@@ -219,57 +230,90 @@ export default function LoginScreen({
           </TouchableOpacity>
         </View>
 
-        <TouchableOpacity
-          style={styles.forgotButton}
-          onPress={handleForgotPassword}
-          disabled={loading}
-        >
-          <Text style={styles.forgotText}>
-            Forgot Password?
-          </Text>
-        </TouchableOpacity>
+        <Text style={styles.label}>
+          Confirm Password
+        </Text>
+
+        <View style={styles.inputContainer}>
+          <Ionicons
+            name="lock-closed-outline"
+            size={21}
+            color={colors.subText}
+          />
+
+          <TextInput
+            style={styles.input}
+            placeholder="Confirm your password"
+            placeholderTextColor={colors.subText}
+            value={confirmPassword}
+            onChangeText={setConfirmPassword}
+            secureTextEntry={!showConfirmPassword}
+            returnKeyType="done"
+            onSubmitEditing={handleRegister}
+          />
+
+          <TouchableOpacity
+            onPress={() =>
+              setShowConfirmPassword(
+                !showConfirmPassword
+              )
+            }
+          >
+            <Ionicons
+              name={
+                showConfirmPassword
+                  ? "eye-off-outline"
+                  : "eye-outline"
+              }
+              size={21}
+              color={colors.subText}
+            />
+          </TouchableOpacity>
+        </View>
 
         <TouchableOpacity
           style={[
-            styles.loginButton,
+            styles.registerButton,
             loading && styles.disabledButton,
           ]}
-          onPress={handleLogin}
+          onPress={handleRegister}
           activeOpacity={0.8}
           disabled={loading}
         >
-          <Text style={styles.loginButtonText}>
-            {loading ? "Logging In..." : "Login"}
+          <Text style={styles.registerButtonText}>
+            {loading
+              ? "Creating Account..."
+              : "Sign Up"}
           </Text>
 
           {!loading && (
             <Ionicons
-              name="arrow-forward"
+              name="person-add-outline"
               size={20}
               color="#FFFFFF"
             />
           )}
         </TouchableOpacity>
 
-        <View style={styles.registerRow}>
-          <Text style={styles.registerText}>
-            Don&apos;t have an account?
+        <View style={styles.loginRow}>
+          <Text style={styles.loginText}>
+            Already have an account?
           </Text>
 
           <TouchableOpacity
             onPress={() =>
-              navigation.navigate("Register")
+              navigation.navigate("Login")
             }
             disabled={loading}
           >
-            <Text style={styles.registerLink}>
+            <Text style={styles.loginLink}>
               {" "}
-              Sign Up
+              Login
             </Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
-    </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
 
@@ -281,14 +325,14 @@ const styles = StyleSheet.create({
 
   scrollContent: {
     flexGrow: 1,
-    justifyContent: "center",
     paddingHorizontal: 25,
-    paddingVertical: 30,
+    paddingTop: 25,
+    paddingBottom: 50,
   },
 
   logo: {
-    width: 150,
-    height: 150,
+    width: 135,
+    height: 135,
     alignSelf: "center",
     marginBottom: 5,
   },
@@ -303,8 +347,8 @@ const styles = StyleSheet.create({
   subtitle: {
     color: colors.subText,
     fontSize: 14,
-    lineHeight: 21,
     textAlign: "center",
+    lineHeight: 21,
     marginTop: 8,
     marginBottom: 28,
   },
@@ -344,19 +388,7 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
   },
 
-  forgotButton: {
-    alignSelf: "flex-end",
-    marginTop: -4,
-    marginBottom: 22,
-  },
-
-  forgotText: {
-    color: colors.primary,
-    fontSize: 14,
-    fontWeight: "600",
-  },
-
-  loginButton: {
+  registerButton: {
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
@@ -379,24 +411,24 @@ const styles = StyleSheet.create({
     opacity: 0.6,
   },
 
-  loginButtonText: {
+  registerButtonText: {
     color: "#FFFFFF",
     fontSize: 17,
     fontWeight: "bold",
   },
 
-  registerRow: {
+  loginRow: {
     flexDirection: "row",
     justifyContent: "center",
     marginTop: 24,
   },
 
-  registerText: {
+  loginText: {
     color: colors.subText,
     fontSize: 14,
   },
 
-  registerLink: {
+  loginLink: {
     color: colors.primary,
     fontSize: 14,
     fontWeight: "bold",

@@ -1,12 +1,17 @@
 const colors = {
-  background: '#0B1020',
-  card: '#151C30',
-  primary: '#F4B942',
-  text: '#FFFFFF',
-  secondaryText: '#AAB2C8',
-  border: '#27304A',
-  success: '#22C55E',
-  danger: '#EF4444',
+  background: "#F5F7FA",
+  card: "#FFFFFF",
+
+  primary: "#22C55E",
+  secondary: "#0EA5E9",
+
+  text: "#1F2937",
+  subText: "#6B7280",
+
+  success: "#16A34A",
+  danger: "#EF4444",
+
+  border: "#E5E7EB",
 };
 
 export default colors;

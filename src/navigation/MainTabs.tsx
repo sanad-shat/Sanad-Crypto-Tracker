@@ -1,10 +1,10 @@
-import { Ionicons } from '@expo/vector-icons';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Ionicons } from "@expo/vector-icons";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
-import FavoritesScreen from '../screens/Favorites/FavoritesScreen';
-import HomeScreen from '../screens/Home/HomeScreen';
-import ProfileScreen from '../screens/Profile/ProfileScreen';
-import colors from '../styles/colors';
+import FavoritesScreen from "../screens/Favorites/FavoritesScreen";
+import HomeScreen from "../screens/Home/HomeScreen";
+import ProfileScreen from "../screens/Profile/ProfileScreen";
+import colors from "../styles/colors";
 
 export type MainTabsParamList = {
   Home: undefined;
@@ -19,31 +19,62 @@ export default function MainTabs() {
     <Tab.Navigator
       screenOptions={({ route }) => ({
         headerShown: false,
+
         tabBarActiveTintColor: colors.primary,
-        tabBarInactiveTintColor: colors.secondaryText,
+        tabBarInactiveTintColor: colors.subText,
+
         tabBarStyle: {
           backgroundColor: colors.card,
           borderTopColor: colors.border,
           height: 64,
-          paddingBottom: 8,
           paddingTop: 8,
+          paddingBottom: 8,
         },
-        tabBarIcon: ({ color, size }) => {
-          let iconName: keyof typeof Ionicons.glyphMap = 'home-outline';
 
-          if (route.name === 'Favorites') {
-            iconName = 'heart-outline';
-          } else if (route.name === 'Profile') {
-            iconName = 'person-outline';
+        tabBarIcon: ({ color, size, focused }) => {
+          let iconName: keyof typeof Ionicons.glyphMap = "home-outline";
+
+          if (route.name === "Home") {
+            iconName = focused ? "home" : "home-outline";
+          } else if (route.name === "Favorites") {
+            iconName = focused ? "heart" : "heart-outline";
+          } else if (route.name === "Profile") {
+            iconName = focused ? "person" : "person-outline";
           }
 
-          return <Ionicons name={iconName} size={size} color={color} />;
+          return (
+            <Ionicons
+              name={iconName}
+              size={size}
+              color={color}
+            />
+          );
         },
       })}
     >
-      <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Favorites" component={FavoritesScreen} />
-      <Tab.Screen name="Profile" component={ProfileScreen} />
+      <Tab.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{
+          title: "Home",
+        }}
+      />
+
+      <Tab.Screen
+        name="Favorites"
+        component={FavoritesScreen}
+        options={{
+          title: "Favorites",
+        }}
+      />
+
+      <Tab.Screen
+        name="Profile"
+        component={ProfileScreen}
+        options={{
+          title: "Profile",
+        }}
+      />
     </Tab.Navigator>
   );
 }
