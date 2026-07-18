@@ -1,100 +1,52 @@
 import React from "react";
 import {
-  Alert,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
 } from "react-native";
 
-import { signOut } from "firebase/auth";
 import AppHeader from "../../components/AppHeader";
-
 import { auth } from "../../firebase/firebaseConfig";
 import colors from "../../styles/colors";
 
-type SettingsScreenProps = {
-  navigation: any;
-};
-
-export default function SettingsScreen({
-  navigation,
-}: SettingsScreenProps) {
+export default function SettingsScreen() {
   const user = auth.currentUser;
-
-  const handleLogout = async () => {
-    try {
-      await signOut(auth);
-
-      let rootNavigation = navigation;
-
-      while (rootNavigation.getParent()) {
-        rootNavigation = rootNavigation.getParent();
-      }
-
-      rootNavigation.reset({
-        index: 0,
-        routes: [{ name: "Auth" }],
-      });
-    } catch (error: any) {
-      console.log(
-        "Logout Error:",
-        error?.code,
-        error?.message
-      );
-
-      Alert.alert(
-        "Logout Failed",
-        "Could not logout. Please try again."
-      );
-    }
-  };
-
-  const confirmLogout = () => {
-    Alert.alert(
-      "Logout",
-      "Are you sure you want to logout?",
-      [
-        {
-          text: "Cancel",
-          style: "cancel",
-        },
-        {
-          text: "Logout",
-          style: "destructive",
-          onPress: handleLogout,
-        },
-      ]
-    );
-  };
 
   return (
     <View style={styles.container}>
       <AppHeader />
 
-      <Text style={styles.title}>Settings</Text>
+      <View style={styles.content}>
+        <View style={styles.card}>
+          <Text style={styles.label}>
+            Account
+          </Text>
 
-      <View style={styles.card}>
-        <Text style={styles.label}>Account</Text>
+          <Text style={styles.email}>
+            {user?.email || "No Email"}
+          </Text>
 
-        <Text style={styles.email}>
-          {user?.email || "No Email"}
-        </Text>
+          <View style={styles.divider} />
 
-        <Text style={styles.status}>
-          Status: Logged In
-        </Text>
+          <Text style={styles.label}>
+            Account Status
+          </Text>
+
+          <Text style={styles.status}>
+            Logged In
+          </Text>
+
+          <View style={styles.divider} />
+
+          <Text style={styles.label}>
+            Application Version
+          </Text>
+
+          <Text style={styles.value}>
+            Version 1.0.0
+          </Text>
+        </View>
       </View>
-
-      <TouchableOpacity
-        style={styles.logoutButton}
-        onPress={confirmLogout}
-        activeOpacity={0.8}
-      >
-        <Text style={styles.logoutText}>
-          Logout
-        </Text>
-      </TouchableOpacity>
     </View>
   );
 }
@@ -103,58 +55,58 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,
-    padding: 24,
-    justifyContent: "center",
   },
 
-  title: {
-    color: colors.text,
-    fontSize: 30,
-    fontFamily: "Poppins_700Bold",
-    textAlign: "center",
-    marginBottom: 35,
+  content: {
+    paddingHorizontal: 24,
+    paddingTop: 35,
   },
 
   card: {
     backgroundColor: colors.card,
     padding: 20,
-    borderRadius: 15,
+    borderRadius: 16,
     borderWidth: 1,
     borderColor: colors.border,
-    marginBottom: 30,
+
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.07,
+    shadowRadius: 4,
+    elevation: 2,
   },
 
   label: {
     color: colors.subText,
-    fontSize: 15,
+    fontSize: 14,
     fontFamily: "Poppins_400Regular",
-    marginBottom: 10,
+    marginBottom: 7,
   },
 
   email: {
     color: colors.text,
-    fontSize: 18,
+    fontSize: 17,
     fontFamily: "Poppins_600SemiBold",
-    marginBottom: 12,
   },
 
   status: {
     color: "#22C55E",
-    fontSize: 15,
+    fontSize: 16,
     fontFamily: "Poppins_600SemiBold",
   },
 
-  logoutButton: {
-    backgroundColor: "#EF4444",
-    paddingVertical: 15,
-    borderRadius: 14,
-    alignItems: "center",
+  value: {
+    color: colors.text,
+    fontSize: 16,
+    fontFamily: "Poppins_600SemiBold",
   },
 
-  logoutText: {
-    color: "#FFFFFF",
-    fontSize: 17,
-    fontFamily: "Poppins_700Bold",
+  divider: {
+    height: 1,
+    backgroundColor: colors.border,
+    marginVertical: 18,
   },
 });
-

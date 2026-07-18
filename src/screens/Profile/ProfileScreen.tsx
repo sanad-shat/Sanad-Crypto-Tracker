@@ -26,8 +26,6 @@ export default function ProfileScreen() {
           style={styles.avatar}
         />
 
-        <Text style={styles.title}>My Profile</Text>
-
         <View style={styles.card}>
           <Text style={styles.label}>Email</Text>
 
@@ -39,7 +37,7 @@ export default function ProfileScreen() {
 
           <Text style={styles.label}>Status</Text>
 
-          <Text style={styles.value}>
+          <Text style={styles.statusValue}>
             Logged In
           </Text>
 
@@ -65,30 +63,32 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     alignItems: "center",
-    padding: 24,
+    paddingHorizontal: 24,
+    paddingTop: 35,
   },
 
   avatar: {
-    width: 120,
-    height: 120,
-    marginTop: 20,
-    marginBottom: 20,
-  },
-
-  title: {
-    color: colors.text,
-    fontSize: 28,
-    fontFamily: "Poppins_700Bold",
-    marginBottom: 25,
+    width: 100,
+    height: 100,
+    marginBottom: 28,
   },
 
   card: {
     width: "100%",
     backgroundColor: colors.card,
-    borderRadius: 16,
+    borderRadius: 18,
     borderWidth: 1,
     borderColor: colors.border,
     padding: 20,
+
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
+    elevation: 3,
   },
 
   label: {
@@ -100,6 +100,12 @@ const styles = StyleSheet.create({
 
   value: {
     color: colors.text,
+    fontSize: 17,
+    fontFamily: "Poppins_600SemiBold",
+  },
+
+  statusValue: {
+    color: colors.success,
     fontSize: 17,
     fontFamily: "Poppins_600SemiBold",
   },

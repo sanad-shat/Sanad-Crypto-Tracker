@@ -66,12 +66,6 @@ export default function FavoritesScreen({
     <SafeAreaView style={styles.container}>
       <AppHeader />
 
-      <Text style={styles.title}>Favorites</Text>
-
-      <Text style={styles.description}>
-        Your favorite cryptocurrencies.
-      </Text>
-
       {favoriteCoins.length === 0 ? (
         <View style={styles.emptyContainer}>
           <Text style={styles.emptyTitle}>
@@ -118,20 +112,7 @@ const styles = StyleSheet.create({
     paddingTop: 20,
   },
 
-  title: {
-    color: colors.text,
-    fontSize: 28,
-    fontFamily: "Poppins_700Bold",
-  },
-
-  description: {
-    color: colors.subText,
-    fontSize: 15,
-    fontFamily: "Poppins_400Regular",
-    marginTop: 5,
-    marginBottom: 15,
-  },
-
+  
   listContent: {
     paddingBottom: 30,
   },
