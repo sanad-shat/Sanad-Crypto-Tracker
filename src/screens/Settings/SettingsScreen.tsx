@@ -6,9 +6,9 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import AppHeader from "../../components/AppHeader";
 
 import { signOut } from "firebase/auth";
+import AppHeader from "../../components/AppHeader";
 
 import { auth } from "../../firebase/firebaseConfig";
 import colors from "../../styles/colors";
@@ -70,7 +70,8 @@ export default function SettingsScreen({
 
   return (
     <View style={styles.container}>
-        <AppHeader />
+      <AppHeader />
+
       <Text style={styles.title}>Settings</Text>
 
       <View style={styles.card}>
@@ -109,7 +110,7 @@ const styles = StyleSheet.create({
   title: {
     color: colors.text,
     fontSize: 30,
-    fontWeight: "bold",
+    fontFamily: "Poppins_700Bold",
     textAlign: "center",
     marginBottom: 35,
   },
@@ -126,20 +127,21 @@ const styles = StyleSheet.create({
   label: {
     color: colors.subText,
     fontSize: 15,
+    fontFamily: "Poppins_400Regular",
     marginBottom: 10,
   },
 
   email: {
     color: colors.text,
     fontSize: 18,
-    fontWeight: "600",
+    fontFamily: "Poppins_600SemiBold",
     marginBottom: 12,
   },
 
   status: {
     color: "#22C55E",
     fontSize: 15,
-    fontWeight: "600",
+    fontFamily: "Poppins_600SemiBold",
   },
 
   logoutButton: {
@@ -152,6 +154,7 @@ const styles = StyleSheet.create({
   logoutText: {
     color: "#FFFFFF",
     fontSize: 17,
-    fontWeight: "bold",
+    fontFamily: "Poppins_700Bold",
   },
 });
+

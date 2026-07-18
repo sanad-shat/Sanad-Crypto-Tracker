@@ -110,5 +110,3 @@ const styles = StyleSheet.create({
     marginVertical: 18,
   },
 });
-
-export default ProfileScreen;
