@@ -1,20 +1,20 @@
 import React, { useState } from "react";
 import {
-    Alert,
-    Image,
-    SafeAreaView,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  Alert,
+  Image,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 
 import { Ionicons } from "@expo/vector-icons";
 import {
-    createUserWithEmailAndPassword,
-    updateProfile,
+  createUserWithEmailAndPassword,
+  updateProfile,
 } from "firebase/auth";
 
 import { auth } from "../../firebase/firebaseConfig";
@@ -105,24 +105,46 @@ export default function RegisterScreen({
         ]
       );
     } catch (error: any) {
-      console.log("FULL FIREBASE ERROR:", error);
-      console.log("ERROR CODE:", error?.code);
-      console.log("ERROR MESSAGE:", error?.message);
-      console.log("ERROR NAME:", error?.name);
+      console.log(
+        "Firebase registration error:",
+        error.code,
+        error.message
+      );
 
-      const errorCode =
-        error?.code ||
-        error?.name ||
-        "Unknown";
-
-      const errorMessage =
-        error?.message ||
-        String(error) ||
+      let message =
         "Something went wrong. Please try again.";
+
+      if (error.code === "auth/email-already-in-use") {
+        message =
+          "This email address is already registered.";
+      } else if (error.code === "auth/invalid-email") {
+        message =
+          "Please enter a valid email address.";
+      } else if (error.code === "auth/weak-password") {
+        message =
+          "Password must be at least 6 characters.";
+      } else if (
+        error.code === "auth/network-request-failed"
+      ) {
+        message =
+          "Please check your internet connection.";
+      } else if (
+        error.code === "auth/operation-not-allowed"
+      ) {
+        message =
+          "Email and password registration is not enabled in Firebase.";
+      } else if (
+        error.code === "auth/api-key-not-valid"
+      ) {
+        message =
+          "The Firebase API key is incorrect.";
+      }
 
       Alert.alert(
         "Registration Failed",
-        `${errorMessage}\n\nCode: ${errorCode}`
+        `${message}\n\nCode: ${
+          error.code || "Unknown"
+        }`
       );
     } finally {
       setLoading(false);
@@ -149,7 +171,8 @@ export default function RegisterScreen({
         <Text style={styles.title}>Create Account</Text>
 
         <Text style={styles.subtitle}>
-          Sign up to start tracking cryptocurrency prices
+          Sign up to start tracking cryptocurrency
+          prices
         </Text>
 
         <Text style={styles.label}>Full Name</Text>

@@ -6,54 +6,71 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import AppHeader from "../../components/AppHeader";
 
 import { signOut } from "firebase/auth";
+
 import { auth } from "../../firebase/firebaseConfig";
 import colors from "../../styles/colors";
 
-type Props = {
+type SettingsScreenProps = {
   navigation: any;
 };
 
 export default function SettingsScreen({
   navigation,
-}: Props) {
+}: SettingsScreenProps) {
   const user = auth.currentUser;
 
-  const handleLogout = () => {
-  Alert.alert(
-    "Logout",
-    "Are you sure you want to logout?",
-    [
-      {
-        text: "Cancel",
-        style: "cancel",
-      },
-      {
-        text: "Logout",
-        style: "destructive",
-        onPress: async () => {
-          try {
-            await signOut(auth);
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
 
-            navigation.getParent()?.reset({
-              index: 0,
-              routes: [{ name: "Auth" }],
-            });
-          } catch (error) {
-            Alert.alert(
-              "Error",
-              "Failed to logout."
-            );
-          }
+      let rootNavigation = navigation;
+
+      while (rootNavigation.getParent()) {
+        rootNavigation = rootNavigation.getParent();
+      }
+
+      rootNavigation.reset({
+        index: 0,
+        routes: [{ name: "Auth" }],
+      });
+    } catch (error: any) {
+      console.log(
+        "Logout Error:",
+        error?.code,
+        error?.message
+      );
+
+      Alert.alert(
+        "Logout Failed",
+        "Could not logout. Please try again."
+      );
+    }
+  };
+
+  const confirmLogout = () => {
+    Alert.alert(
+      "Logout",
+      "Are you sure you want to logout?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
         },
-      },
-    ]
-  );
-};
+        {
+          text: "Logout",
+          style: "destructive",
+          onPress: handleLogout,
+        },
+      ]
+    );
+  };
 
   return (
     <View style={styles.container}>
+        <AppHeader />
       <Text style={styles.title}>Settings</Text>
 
       <View style={styles.card}>
@@ -70,7 +87,8 @@ export default function SettingsScreen({
 
       <TouchableOpacity
         style={styles.logoutButton}
-        onPress={handleLogout}
+        onPress={confirmLogout}
+        activeOpacity={0.8}
       >
         <Text style={styles.logoutText}>
           Logout
@@ -89,9 +107,9 @@ const styles = StyleSheet.create({
   },
 
   title: {
+    color: colors.text,
     fontSize: 30,
     fontWeight: "bold",
-    color: colors.text,
     textAlign: "center",
     marginBottom: 35,
   },
@@ -106,21 +124,21 @@ const styles = StyleSheet.create({
   },
 
   label: {
-    fontSize: 15,
     color: colors.subText,
+    fontSize: 15,
     marginBottom: 10,
   },
 
   email: {
+    color: colors.text,
     fontSize: 18,
     fontWeight: "600",
-    color: colors.text,
     marginBottom: 12,
   },
 
   status: {
-    fontSize: 15,
     color: "#22C55E",
+    fontSize: 15,
     fontWeight: "600",
   },
 

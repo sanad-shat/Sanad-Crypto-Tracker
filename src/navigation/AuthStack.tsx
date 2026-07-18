@@ -15,7 +15,7 @@ const Stack = createNativeStackNavigator<AuthStackParamList>();
 export default function AuthStack() {
   return (
     <Stack.Navigator
-      initialRouteName="Login"
+      initialRouteName="Splash"
       screenOptions={{
         headerShown: false,
       }}

@@ -61,7 +61,16 @@ export default function LoginScreen({
         password
       );
 
-      navigation.replace("MainApp");
+      let rootNavigation = navigation;
+
+      while (rootNavigation.getParent()) {
+        rootNavigation = rootNavigation.getParent();
+      }
+
+      rootNavigation.reset({
+        index: 0,
+        routes: [{ name: "MainApp" }],
+      });
     } catch (error: any) {
       let message =
         "Login failed. Please check your information.";
@@ -141,12 +150,13 @@ export default function LoginScreen({
     <KeyboardAvoidingView
       style={styles.container}
       behavior={
-        Platform.OS === "ios" ? "padding" : undefined
+        Platform.OS === "ios" ? "height" : undefined
       }
     >
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         keyboardShouldPersistTaps="handled"
+        keyboardDismissMode="on-drag"
         showsVerticalScrollIndicator={false}
       >
         <Image
@@ -281,9 +291,10 @@ const styles = StyleSheet.create({
 
   scrollContent: {
     flexGrow: 1,
-    justifyContent: "center",
+    justifyContent: "flex-start",
     paddingHorizontal: 25,
-    paddingVertical: 30,
+    paddingTop: 70,
+    paddingBottom: 40,
   },
 
   logo: {
@@ -296,13 +307,14 @@ const styles = StyleSheet.create({
   title: {
     color: colors.text,
     fontSize: 28,
-    fontWeight: "bold",
+    fontFamily: "Poppins_700Bold",
     textAlign: "center",
   },
 
   subtitle: {
     color: colors.subText,
     fontSize: 14,
+    fontFamily: "Poppins_400Regular",
     lineHeight: 21,
     textAlign: "center",
     marginTop: 8,
@@ -312,7 +324,7 @@ const styles = StyleSheet.create({
   label: {
     color: colors.text,
     fontSize: 14,
-    fontWeight: "600",
+    fontFamily: "Poppins_600SemiBold",
     marginBottom: 8,
   },
 
@@ -340,6 +352,7 @@ const styles = StyleSheet.create({
     flex: 1,
     color: colors.text,
     fontSize: 15,
+    fontFamily: "Poppins_400Regular",
     paddingHorizontal: 10,
     paddingVertical: 15,
   },
@@ -353,7 +366,7 @@ const styles = StyleSheet.create({
   forgotText: {
     color: colors.primary,
     fontSize: 14,
-    fontWeight: "600",
+    fontFamily: "Poppins_600SemiBold",
   },
 
   loginButton: {
@@ -382,7 +395,7 @@ const styles = StyleSheet.create({
   loginButtonText: {
     color: "#FFFFFF",
     fontSize: 17,
-    fontWeight: "bold",
+    fontFamily: "Poppins_700Bold",
   },
 
   registerRow: {
@@ -394,11 +407,12 @@ const styles = StyleSheet.create({
   registerText: {
     color: colors.subText,
     fontSize: 14,
+    fontFamily: "Poppins_400Regular",
   },
 
   registerLink: {
     color: colors.primary,
     fontSize: 14,
-    fontWeight: "bold",
+    fontFamily: "Poppins_700Bold",
   },
 });

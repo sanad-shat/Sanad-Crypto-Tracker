@@ -1,78 +1,71 @@
 import { Ionicons } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import React, { useState } from "react";
 
 import FavoritesScreen from "../screens/Favorites/FavoritesScreen";
 import HomeScreen from "../screens/Home/HomeScreen";
 import ProfileScreen from "../screens/Profile/ProfileScreen";
-import colors from "../styles/colors";
 
-export type MainTabsParamList = {
-  Home: undefined;
-  Favorites: undefined;
-  Profile: undefined;
-};
-
-const Tab = createBottomTabNavigator<MainTabsParamList>();
+const Tab = createBottomTabNavigator();
 
 export default function MainTabs() {
+  const [favoriteCoins, setFavoriteCoins] = useState<any[]>([]);
+
   return (
-    <Tab.Navigator
-      screenOptions={({ route }) => ({
-        headerShown: false,
-
-        tabBarActiveTintColor: colors.primary,
-        tabBarInactiveTintColor: colors.subText,
-
-        tabBarStyle: {
-          backgroundColor: colors.card,
-          borderTopColor: colors.border,
-          height: 64,
-          paddingTop: 8,
-          paddingBottom: 8,
-        },
-
-        tabBarIcon: ({ color, size, focused }) => {
-          let iconName: keyof typeof Ionicons.glyphMap = "home-outline";
-
-          if (route.name === "Home") {
-            iconName = focused ? "home" : "home-outline";
-          } else if (route.name === "Favorites") {
-            iconName = focused ? "heart" : "heart-outline";
-          } else if (route.name === "Profile") {
-            iconName = focused ? "person" : "person-outline";
-          }
-
-          return (
+    <Tab.Navigator>
+      <Tab.Screen
+        name="Home"
+        options={{
+          tabBarIcon: ({ color, size }) => (
             <Ionicons
-              name={iconName}
+              name="home-outline"
               size={size}
               color={color}
             />
-          );
-        },
-      })}
-    >
-      <Tab.Screen
-        name="Home"
-        component={HomeScreen}
-        options={{
-          title: "Home",
+          ),
         }}
-      />
+      >
+        {(props) => (
+          <HomeScreen
+            {...props}
+            favoriteCoins={favoriteCoins}
+            setFavoriteCoins={setFavoriteCoins}
+          />
+        )}
+      </Tab.Screen>
 
       <Tab.Screen
         name="Favorites"
-        component={FavoritesScreen}
         options={{
-          title: "Favorites",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons
+              name="heart-outline"
+              size={size}
+              color={color}
+            />
+          ),
         }}
-      />
+      >
+        {(props) => (
+          <FavoritesScreen
+            {...props}
+            favoriteCoins={favoriteCoins}
+            setFavoriteCoins={setFavoriteCoins}
+          />
+        )}
+      </Tab.Screen>
 
       <Tab.Screen
         name="Profile"
         component={ProfileScreen}
         options={{
-          title: "Profile",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons
+              name="person-outline"
+              size={size}
+              color={color}
+            />
+          ),
         }}
       />
     </Tab.Navigator>

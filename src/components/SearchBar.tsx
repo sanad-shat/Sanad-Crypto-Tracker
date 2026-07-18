@@ -2,13 +2,20 @@ import React from "react";
 import { StyleSheet, TextInput, View } from "react-native";
 import colors from "../styles/colors";
 
-const SearchBar = () => {
+type SearchBarProps = {
+  value: string;
+  onChangeText: (text: string) => void;
+};
+
+const SearchBar = ({ value, onChangeText }: SearchBarProps) => {
   return (
     <View style={styles.container}>
       <TextInput
         placeholder="Search cryptocurrency..."
         placeholderTextColor={colors.subText}
         style={styles.input}
+        value={value}
+        onChangeText={onChangeText}
       />
     </View>
   );
