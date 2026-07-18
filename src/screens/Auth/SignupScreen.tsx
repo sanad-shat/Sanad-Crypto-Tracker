@@ -24,8 +24,8 @@ const styles = StyleSheet.create({
     
     marginBottom: 10,
   },
-  description: {
-    color: colors.secondaryText,
+    description: {
+  color: colors.subText,
     fontSize: 15,
     textAlign: 'center',
     lineHeight: 22,

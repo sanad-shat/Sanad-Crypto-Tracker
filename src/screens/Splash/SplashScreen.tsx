@@ -1,10 +1,10 @@
 import React, { useEffect } from "react";
 import {
-    ActivityIndicator,
-    Image,
-    StyleSheet,
-    Text,
-    View,
+  ActivityIndicator,
+  Image,
+  StyleSheet,
+  Text,
+  View,
 } from "react-native";
 
 import colors from "../../styles/colors";
@@ -64,7 +64,8 @@ const styles = StyleSheet.create({
   title: {
     color: colors.text,
     fontSize: 26,
-    fontFamily: "Poppins_700Bold"
+    fontFamily: "Poppins_700Bold",
+
     marginTop: 20,
   },
 
