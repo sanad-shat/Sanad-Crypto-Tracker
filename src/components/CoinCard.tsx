@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
   name: {
     color: colors.text,
     fontSize: 18,
-    fontWeight: "bold",
+    fontFamily: "Poppins_700Bold"
   },
 
   symbol: {
@@ -147,12 +147,12 @@ const styles = StyleSheet.create({
   price: {
     color: colors.text,
     fontSize: 17,
-    fontWeight: "600",
+    fontFamily: "Poppins_600SemiBold"
   },
 
   change: {
     fontSize: 15,
-    fontWeight: "600",
+    fontFamily: "Poppins_600SemiBold"
   },
 });
 
